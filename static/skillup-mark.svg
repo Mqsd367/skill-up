@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">SkillUp mark</title>
+  <desc id="desc">Rising bars with an upward arrow above an open book</desc>
+  <g fill="none" stroke="#12324B" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M28 164 218 38" stroke-width="13"/>
+    <path d="m190 40 29-2-3 29" stroke-width="13"/>
+    <path d="M36 165h42v56H36z" fill="#13B8AB" stroke="none"/>
+    <path d="M91 128h42v93H91z" fill="#13B8AB" stroke="none"/>
+    <path d="M146 88h42v133h-42z" fill="#13B8AB" stroke="none"/>
+    <circle cx="193" cy="91" r="10" fill="#F7B23B" stroke="none"/>
+    <path d="M43 238c31-17 62-17 94 0 31-17 62-17 94 0" stroke-width="12"/>
+    <path d="M137 238v-30" stroke-width="8"/>
+  </g>
+</svg>

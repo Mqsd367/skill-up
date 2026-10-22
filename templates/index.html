@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkillUp — Turn your goals into skills</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='skillup-mark.svg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="scrim" id="scrim" hidden></div>
+
+<!-- ============ Sidebar ============ -->
+<aside class="sidebar" id="sidebar" aria-label="Main navigation">
+  <div class="brand">
+    <img class="brand-logo" src="{{ url_for('static', filename='skillup-logo.png') }}" alt="SkillUp — Learn, Grow, Go Further" style="mix-blend-mode:screen;opacity:.95;">
+  </div>
+  <nav>
+    <button class="nav-btn" data-action="nav" data-view="dashboard"><i data-lucide="layout-dashboard"></i>Dashboard</button>
+    <button class="nav-btn" data-action="nav" data-view="roadmaps"><i data-lucide="route"></i>My Learning Roadmaps</button>
+    <button class="nav-btn" data-action="nav" data-view="explore"><i data-lucide="compass"></i>Explore Skills</button>
+    <button class="nav-btn" data-action="nav" data-view="projects"><i data-lucide="hammer"></i>Projects</button>
+    <button class="nav-btn" data-action="nav" data-view="progress"><i data-lucide="bar-chart-3"></i>Progress</button>
+    <button class="nav-btn" data-action="nav" data-view="settings"><i data-lucide="settings"></i>Settings</button>
+  </nav>
+  <button class="profile" data-action="open-auth" aria-label="Sign in or create an account">
+    <span class="avatar" aria-hidden="true">G</span>
+    <span><strong>Guest learner</strong><small>Demo mode · Sign in</small></span>
+  </button>
+</aside>
+
+<!-- ============ Main ============ -->
+<div class="shell">
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar"><i data-lucide="menu"></i></button>
+    <p class="welcome">Turn your goals into skills.</p>
+    <label class="search">
+      <i data-lucide="search" aria-hidden="true"></i>
+      <span class="sr">Search learning paths and skills</span>
+      <input id="search" type="search" placeholder="Search paths and skills" autocomplete="off">
+    </label>
+    <button class="icon-btn notify-btn" data-action="open-reminders" aria-label="Task reminders and notifications" id="notifyBtn">
+      <i data-lucide="bell"></i>
+      <span class="badge-count" id="reminderCount" hidden>0</span>
+    </button>
+    <button class="avatar" data-action="open-auth" aria-label="Account">G</button>
+    <button class="btn primary compact" data-action="open-create"><i data-lucide="plus"></i><span>New roadmap</span></button>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <p class="demo-note"><i data-lucide="flask-conical"></i> Demo mode: sample data stored in this browser only. Sign in to save real roadmaps.</p>
+
+    <!-- Dashboard -->
+    <section class="view" id="view-dashboard" aria-labelledby="h-dash">
+      <div class="hero">
+        <div>
+          <h1 id="h-dash">Learn smarter. Build real skills.</h1>
+          <p>Your personal AI learning companion helps you choose what to learn, practise with purpose, and track your progress.</p>
+          <div class="row">
+            <button class="btn primary" data-action="open-create"><i data-lucide="sparkles"></i>Create My Learning Roadmap</button>
+            <button class="btn ghost" data-action="nav" data-view="explore">Explore Skills</button>
+          </div>
+        </div>
+        <ol class="hero-path" aria-hidden="true">
+          <li class="done">Foundations</li><li class="done">Core concepts</li><li class="now">First project</li><li>Capstone</li>
+        </ol>
+      </div>
+      <div class="reminder-banner" id="reminderBanner" hidden></div>
+      <div class="stats" id="stats"></div>
+      <div class="head"><h2>Continue learning</h2><button class="link" data-action="nav" data-view="roadmaps">View all</button></div>
+      <div class="grid cards" id="continue"></div>
+      <div class="head"><h2>Recommended for you</h2><button class="link" data-action="nav" data-view="explore">Explore all</button></div>
+      <div class="grid cards" id="recommended"></div>
+    </section>
+
+    <section class="view" id="view-roadmaps" aria-labelledby="h-rm" hidden>
+      <div class="head"><h1 id="h-rm">My learning roadmaps</h1><button class="btn primary compact" data-action="open-create"><i data-lucide="plus"></i>New roadmap</button></div>
+      <div class="grid cards" id="allRoadmaps"></div>
+    </section>
+
+    <section class="view" id="view-explore" aria-labelledby="h-ex" hidden>
+      <div class="head"><h1 id="h-ex">Explore skills</h1>
+        <div class="chips" role="group" aria-label="Filter by difficulty" id="levelChips">
+          <button class="chip" aria-pressed="true" data-level="All">All</button>
+          <button class="chip" aria-pressed="false" data-level="Beginner">Beginner</button>
+          <button class="chip" aria-pressed="false" data-level="Intermediate">Intermediate</button>
+          <button class="chip" aria-pressed="false" data-level="Advanced">Advanced</button>
+        </div>
+      </div>
+      <div class="grid cards" id="allSkills"></div>
+    </section>
+
+    <section class="view" id="view-projects" aria-labelledby="h-pr" hidden>
+      <div class="head"><h1 id="h-pr">Projects</h1></div>
+      <div class="grid cards" id="projectList"></div>
+    </section>
+
+    <section class="view" id="view-progress" aria-labelledby="h-pg" hidden>
+      <div class="head"><h1 id="h-pg">Progress</h1></div>
+      <div class="stats" id="stats2"></div>
+      <div class="panel" id="progressList"></div>
+      <div id="certificateArea"></div>
+    </section>
+
+    <section class="view" id="view-settings" aria-labelledby="h-st" hidden>
+      <div class="head"><h1 id="h-st">Settings</h1></div>
+      <div class="panel stack">
+        <div><h2>Integrations</h2>
+          <ul class="status"><li><span class="pill off">Needs key</span> Gemini roadmap generation: set <code>GEMINI_API_KEY</code> in <code>.env</code></li><li><span class="pill off">Local</span> Accounts and roadmaps are stored in the SQLite file <code>skillup.db</code></li></ul></div>
+        <div><h2>Demo data</h2><p class="muted">Clear sample progress and any roadmaps you saved locally.</p>
+          <button class="btn ghost" data-action="reset-demo"><i data-lucide="rotate-ccw"></i>Reset demo data</button></div>
+      </div>
+    </section>
+
+    <!-- Roadmap result -->
+    <section class="view" id="view-roadmap" aria-labelledby="h-rd" hidden>
+      <div id="roadmapDetail"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ Create roadmap dialog ============ -->
+<dialog id="createDialog" aria-labelledby="createTitle">
+  <form id="roadmapForm" novalidate>
+    <div class="dlg-head"><h2 id="createTitle">Create your learning roadmap</h2>
+      <button type="button" class="icon-btn" data-action="close-dialog" aria-label="Close"><i data-lucide="x"></i></button></div>
+    <p class="form-error" id="formError" role="alert" hidden></p>
+    <div class="field"><label for="goal">What do you want to learn?</label>
+      <input id="goal" name="goal" type="text" placeholder="e.g. Full-stack web development" required aria-describedby="goal-err"><p class="err" id="goal-err" role="alert"></p></div>
+    <div class="two">
+      <div class="field"><label for="level">Current level</label>
+        <select id="level" name="level" required aria-describedby="level-err"><option value="">Select level</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select><p class="err" id="level-err" role="alert"></p></div>
+      <div class="field"><label for="daily">Daily study time</label>
+        <select id="daily" name="daily" required aria-describedby="daily-err"><option value="">Select time</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option><option value="120">120 minutes</option></select><p class="err" id="daily-err" role="alert"></p></div>
+    </div>
+    <div class="field"><label for="known">Skills you already know <span class="muted">(optional)</span></label>
+      <input id="known" name="known" type="text" placeholder="e.g. HTML, basic Python"></div>
+    <div class="two">
+      <div class="field"><label for="weeks">Target duration (weeks)</label>
+        <input id="weeks" name="weeks" type="number" min="1" max="52" placeholder="8" required aria-describedby="weeks-err"><p class="err" id="weeks-err" role="alert"></p></div>
+      <div class="field"><label for="pref">Learning preference</label>
+        <select id="pref" name="pref" required aria-describedby="pref-err"><option value="">Select preference</option><option>Videos</option><option>Reading</option><option>Hands-on Projects</option><option>Mixed</option></select><p class="err" id="pref-err" role="alert"></p></div>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="btn ghost" data-action="close-dialog">Cancel</button>
+      <button type="submit" class="btn primary" id="genBtn"><span class="spin" aria-hidden="true"></span><span id="genLabel">Generate My Roadmap</span></button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ Auth dialog ============ -->
+<dialog id="authDialog" aria-labelledby="authTitle">
+  <form id="authForm" novalidate>
+    <div class="dlg-head"><h2 id="authTitle">Sign in to SkillUp</h2>
+      <button type="button" class="icon-btn" data-action="close-dialog" aria-label="Close"><i data-lucide="x"></i></button></div>
+    <p class="banner"><i data-lucide="info"></i> Your account and saved roadmaps are stored in this app's own database. Use a password of at least 8 characters.</p>
+    <div class="tabs" role="group" aria-label="Sign in or register">
+      <button type="button" class="chip" data-mode="login" aria-pressed="true">Sign in</button>
+      <button type="button" class="chip" data-mode="register" aria-pressed="false">Create account</button>
+    </div>
+    <div class="field"><label for="fullName">Full name <span class="muted">(for your certificate)</span></label><input id="fullName" type="text" autocomplete="name" maxlength="100" aria-describedby="name-err"><p class="err" id="name-err" role="alert"></p></div>
+    <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required aria-describedby="email-err"><p class="err" id="email-err" role="alert"></p></div>
+    <div class="field"><label for="password">Password</label><div class="password-field"><input id="password" type="password" autocomplete="current-password" minlength="8" required aria-describedby="password-err"><button type="button" class="password-toggle" data-action="toggle-password" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye"></i></button></div><p class="err" id="password-err" role="alert"></p></div>
+    <button type="submit" class="btn primary block" id="authSubmit">Sign in</button>
+  </form>
+</dialog>
+
+<!-- ============ Reminders dialog ============ -->
+<dialog id="remindersDialog" aria-labelledby="remindersTitle">
+  <div class="dlg-head">
+    <div class="row align-center">
+      <div class="ico-badge warn"><i data-lucide="alarm-clock"></i></div>
+      <h2 id="remindersTitle">Learning Reminders & Tasks</h2>
+    </div>
+    <button type="button" class="icon-btn" data-action="close-dialog" aria-label="Close"><i data-lucide="x"></i></button>
+  </div>
+  <div class="reminders-body">
+    <div id="remindersList" class="reminders-list"></div>
+    <div class="reminders-prefs">
+      <div class="pref-row">
+        <span><i data-lucide="volume-2"></i> Sound chime on timer expiry</span>
+        <label class="switch">
+          <input type="checkbox" id="soundToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="pref-row" id="notifyPermRow">
+        <span><i data-lucide="bell-ring"></i> Desktop notifications</span>
+        <button type="button" class="btn ghost compact" data-action="request-notify" id="notifyPermBtn">Enable</button>
+      </div>
+    </div>
+  </div>
+  <div class="dlg-foot">
+    <button type="button" class="btn ghost" data-action="close-dialog">Close</button>
+  </div>
+</dialog>
+
+<!-- ============ Certificate dialog ============ -->
+<dialog id="certDialog" aria-labelledby="certDialogTitle">
+  <div class="dlg-head">
+    <h2 id="certDialogTitle">Your Certificate of Completion</h2>
+    <button type="button" class="icon-btn" data-action="close-dialog" aria-label="Close"><i data-lucide="x"></i></button>
+  </div>
+  <div class="cert-dialog-body">
+    <div class="cert-wrap" id="certPreview">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+  <div class="dlg-foot">
+    <button type="button" class="btn ghost" data-action="close-dialog">Close</button>
+    <button type="button" class="btn primary" data-action="print-cert"><i data-lucide="printer"></i>Print / Save PDF</button>
+  </div>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
