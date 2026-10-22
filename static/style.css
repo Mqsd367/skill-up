@@ -447,3 +447,20 @@ dialog form { padding: 24px; display: grid; gap: 16px; }
   #certPrintArea .cert { box-shadow: none; outline: none; }
 }
 
+/* Keep filled and focused fields within the dark theme. */
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  background: #12333b !important;
+  color: #e8ffff !important;
+  border-color: #2f858d !important;
+}
+
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #e8ffff !important;
+  -webkit-box-shadow: 0 0 0 1000px #12333b inset !important;
+  box-shadow: 0 0 0 1000px #12333b inset !important;
+  caret-color: #e8ffff;
+}

@@ -79,3 +79,11 @@
   </script>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const name = document.getElementById('entryName');
+  const label = document.querySelector('label[for="entryName"]');
+  if (label) label.textContent = 'Name';
+  if (name) name.placeholder = 'Full Name';
+});
+</script>

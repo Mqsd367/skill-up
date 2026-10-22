@@ -270,7 +270,7 @@ function completedRoadmaps() {
 function certHtml(rm, recipientName, dateStr) {
   const logoUrl = '/static/skillup-logo.png';
   const date = dateStr || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  const name = recipientName || (state.user && state.user.name) || 'Learner';
+  const name = recipientName || (state.user && state.user.name) || 'Full Name';
   return `
     <div class="cert" id="certDoc">
       <div class="cert-corner-tr"></div>
@@ -321,8 +321,10 @@ function openCertificate(rmId) {
     toast('Complete all topics in this roadmap first to earn your certificate.', 'warn');
     return;
   }
-  const name = (state.user && state.user.name) || 'Learner';
+  const name = (state.user && state.user.name) || '';
   const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const nameInput = $('#certRecipientName');
+  if (nameInput) nameInput.value = name;
   const preview = $('#certPreview');
   if (preview) preview.innerHTML = certHtml(rm, name, date);
   // store for print
@@ -953,6 +955,17 @@ document.addEventListener('click', async e => {
       printCert();
       break;
   }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.id !== 'certRecipientName') return;
+  const dlg = $('#certDialog');
+  const rm = findRoadmap(dlg.dataset.rmId);
+  if (!rm) return;
+  const value = e.target.value.trim();
+  dlg.dataset.name = value;
+  $('#certPreview').innerHTML = certHtml(rm, value, dlg.dataset.date);
+  icons();
 });
 
 document.addEventListener('change', e => {
