@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · SkillUp</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='skillup-mark.svg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-card" aria-labelledby="authTitle">
+      <img class="auth-logo" src="{{ url_for('static', filename='skillup-logo.png') }}" alt="SkillUp — Learn, Grow, Go Further">
+      <h1 id="authTitle">Sign in to SkillUp</h1>
+      <p class="intro">Sign in to access your learning dashboard and saved roadmaps.</p>
+      <div class="tabs" role="group" aria-label="Sign in or register">
+        <button type="button" class="chip" data-mode="login" aria-pressed="true">Sign in</button>
+        <button type="button" class="chip" data-mode="register" aria-pressed="false">Create account</button>
+      </div>
+      <form id="entryAuthForm" novalidate>
+        <div class="field"><label for="entryName">Full name</label><input id="entryName" type="text" autocomplete="name" maxlength="100" placeholder="Name for your certificate"><small class="muted">Required when creating an account; optional when signing in.</small></div>
+        <div class="field"><label for="entryEmail">Email</label><input id="entryEmail" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="entryPassword">Password</label><div class="password-field"><input id="entryPassword" type="password" autocomplete="current-password" minlength="8" required><button type="button" class="password-toggle" id="entryPasswordToggle" aria-label="Show password" aria-pressed="false" title="Show password"><i data-lucide="eye"></i></button></div></div>
+        <p class="form-message" id="entryMessage" role="alert"></p>
+        <button type="submit" class="btn primary block" id="entrySubmit">Sign in</button>
+      </form>
+    </section>
+  </main>
+  <script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+  <script>
+    'use strict';
+    const $ = (selector) => document.querySelector(selector);
+    let mode = 'login';
+    const icons = () => window.lucide && window.lucide.createIcons();
+    const icon = (name) => `<i data-lucide="${name}"></i>`;
+    function setPasswordVisibility(visible) {
+      const input = $('#entryPassword'), button = $('#entryPasswordToggle');
+      input.type = visible ? 'text' : 'password';
+      button.setAttribute('aria-pressed', String(visible));
+      button.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+      button.title = visible ? 'Hide password' : 'Show password';
+      button.innerHTML = icon(visible ? 'eye-off' : 'eye');
+      icons();
+    }
+    $('.tabs').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-mode]');
+      if (!button) return;
+      mode = button.dataset.mode;
+      document.querySelectorAll('.tabs [data-mode]').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      $('#authTitle').textContent = mode === 'login' ? 'Sign in to SkillUp' : 'Create your SkillUp account';
+      $('#entrySubmit').textContent = mode === 'login' ? 'Sign in' : 'Create account';
+       $('#entryName').required = mode === 'register';
+      $('#entryPassword').autocomplete = mode === 'login' ? 'current-password' : 'new-password';
+      $('#entryMessage').textContent = '';
+    });
+    $('#entryPasswordToggle').addEventListener('click', () => setPasswordVisibility($('#entryPassword').type === 'password'));
+    $('#entryAuthForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+       const name = $('#entryName').value.trim();
+      const email = $('#entryEmail').value.trim().toLowerCase();
+      const password = $('#entryPassword').value;
+      const message = $('#entryMessage');
+      message.textContent = '';
+       if ((mode === 'register' && !name) || name.length > 100) { message.textContent = 'Enter your full name (up to 100 characters).'; return; }
+      if (!/^\S+@\S+\.\S+$/.test(email)) { message.textContent = 'Enter a valid email address.'; return; }
+      if (password.length < 8) { message.textContent = 'Use at least 8 characters.'; return; }
+      const submit = $('#entrySubmit'); submit.disabled = true;
+      try {
+         const response = await fetch('/api/auth/' + mode, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password }) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Could not sign in.');
+        window.location.href = '/';
+      } catch (error) { message.textContent = error.message; submit.disabled = false; }
+    });
+    icons();
+  </script>
+</body>
+</html>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const name = document.getElementById('entryName');
+  const label = document.querySelector('label[for="entryName"]');
+  if (label) label.textContent = 'Name';
+  if (name) name.placeholder = 'Full Name';
+});
+</script>
